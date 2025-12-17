@@ -3,11 +3,12 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import dotenv from "dotenv";
-import { checkBestPractices } from "./tools/best-practices.js";
+import { autoCommitAndPush } from "./tools/github.js";
 import { generateCode } from "./tools/generate-code.js";
+import { checkBestPractices, } from "./tools/best-practices.js";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { autoCommitAndPush } from "./tools/github.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
