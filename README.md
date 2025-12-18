@@ -1,64 +1,66 @@
-# Simple Red Calculator
+# Simple Calculator (Python)
 
-A straightforward client-side calculator built with HTML, CSS, and JavaScript, featuring a distinct red theme for its operations.
+A straightforward command-line interface (CLI) calculator application built with Python. It supports basic arithmetic operations: addition, subtraction, multiplication, and division.
 
 ## Features
 
-*   Basic arithmetic operations: addition, subtraction, multiplication, division.
-*   Clear (C) and Delete (DEL) functionality.
-*   Decimal point support.
-*   Responsive design for various screen sizes.
-*   Keyboard support for numbers, operators, Enter, Backspace, and Escape.
-*   Vibrant red theme for operator and equals buttons.
+*   **Addition:** Add two numbers.
+*   **Subtraction:** Subtract one number from another.
+*   **Multiplication:** Multiply two numbers.
+*   **Division:** Divide one number by another (includes zero division handling).
+*   **User-friendly Interface:** Simple menu-driven interaction.
+*   **Input Validation:** Handles non-numeric input gracefully.
 
 ## Installation
 
-1.  **Clone the repository (if applicable):**
+### Prerequisites
+
+Ensure you have Python 3.x installed on your system. You can download it from [python.org](https://www.python.org/downloads/).
+
+### Setup Commands
+
+1.  **Clone the repository (if applicable) or download the project files:**
     ```bash
-    git clone <repository-url>
-    cd simple-red-calculator
+    git clone https://github.com/your-username/simple-calculator-py.git
+    cd simple-calculator-py
     ```
-    (For this standalone project, you would simply create the files in a directory.)
+    (Assuming you would put this in a git repo. For this exercise, just ensure `main.py` and `requirements.txt` are in the same directory.)
 
-2.  **Install dependencies:**
-    This project is primarily client-side and doesn't have runtime dependencies that require `npm install` for the calculator itself. However, a `package.json` is provided for convenient local serving using `live-server`.
-
+2.  **Create a virtual environment (recommended):**
     ```bash
-    npm install
+    python -m venv venv
     ```
-    This will install `live-server` as a development dependency.
 
-## Setup Commands
+3.  **Activate the virtual environment:**
+    *   **On Windows:**
+        ```bash
+        .\venv\Scripts\activate
+        ```
+    *   **On macOS/Linux:**
+        ```bash
+        source venv/bin/activate
+        ```
 
-No specific setup commands are required beyond installing `live-server` if you wish to use the `npm run serve` command.
+4.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+    *(Note: For this simple project, `requirements.txt` might be empty as it uses only built-in modules, but it's good practice to include it.)*
 
 ## How to Run the Project
 
-You have two options to run the calculator:
+With your virtual environment activated, simply run the `main.py` script:
 
-### Option 1: Open `index.html` directly
+```bash
+python main.py
+```
 
-Simply open the `index.html` file in your web browser. Drag and drop the file into your browser's window, or navigate to its path using `File -> Open File`.
-
-### Option 2: Use a Local HTTP Server (Recommended for development)
-
-Using a local HTTP server like `live-server` provides a better development experience (e.g., live reloading).
-
-1.  **Ensure `live-server` is installed (as per Installation step 2):**
-    ```bash
-    npm install
-    ```
-
-2.  **Start the server:**
-    ```bash
-    npm run serve
-    ```
-    This will open the calculator in your default web browser, typically at `http://127.0.0.1:8080`.
+The calculator will then prompt you to choose an operation.
 
 ## How to Run Tests
 
-No tests are included or required for this simple project.
+This project does not include tests as per the requirements.
 
 ## Environment Variables
 
-No environment variables are needed for this client-side project.
+No environment variables are required for this project.
