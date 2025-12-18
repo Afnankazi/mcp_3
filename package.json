@@ -1,24 +1,26 @@
 {
-  "name": "simple-red-calculator",
+  "name": "test",
   "version": "1.0.0",
-  "description": "A simple client-side calculator with a red theme.",
-  "main": "script.js",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "echo 'Open index.html in your browser or use a local HTTP server like live-server.'",
-    "serve": "npx live-server .",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "inspect": "set DANGEROUSLY_OMIT_AUTH=true && npx @modelcontextprotocol/inspector node server.js"
   },
-  "keywords": [
-    "calculator",
-    "javascript",
-    "html",
-    "css",
-    "red",
-    "simple"
-  ],
-  "author": "Your Name",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google/genai": "^1.31.0",
+    "@google/generative-ai": "^0.24.1",
+    "@modelcontextprotocol/sdk": "^1.24.3",
+    "@octokit/rest": "^22.0.1",
+    "dotenv": "^17.2.3",
+    "fs-extra": "^11.3.2",
+    "zod": "^3.25.76"
+  },
   "devDependencies": {
-    "live-server": "^1.2.2"
+    "@modelcontextprotocol/inspector": "^0.17.5"
   }
 }

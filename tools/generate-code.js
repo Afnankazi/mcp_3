@@ -1,17 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
 import fs from "fs-extra";
 import path from "path";
-
-export async function generateCode(params){
-    const apiKey = process.env.GOOGLE_API_KEY;
-
-    if(!apiKey){
-        throw new Error("Google API key not found in environment variables.");
-    }
-
-    const ai = new GoogleGenAI({apiKey});
-
-    const prompt = `Generate a complete, production-ready project based on the following requirements:
+export async function generateCode(params) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY environment variable is not set");
+  }
+  
+  const ai = new GoogleGenAI({ apiKey });
+  
+  // Build the prompt for Gemini
+  const prompt = `Generate a complete, production-ready project based on the following requirements:
 
 Description: ${params.description}
 Language: ${params.language}
@@ -75,67 +75,78 @@ Format your response as JSON with the following structure:
   "additionalNotes": "any additional information or tips"
 }`;
 
-try {
+  try {
+    // Call Gemini API using SDK
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt, 
-        config: {
-            systemInstruction: "You are an expert software developer who creates complete, production-ready projects with clear documentation and setup instructions.",
-            temperature: 0.5,
-            topK: 40,
-            topP: 0.95
-        }
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        systemInstruction: "You are an expert software developer who creates complete, production-ready projects with clear documentation and setup instructions.",
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+      }
     });
 
     const generatedText = response.text;
-
-    let cleanedTest = generatedText.trim();
-
-    if (cleanedTest.startsWith('```json')){
-        cleanedTest = cleanedTest.slice(7);
-    } else if(cleanedTest.startsWith('```')){
-        cleanedTest = cleanedTest.slice(3);
+    
+    
+    // Try to parse the JSON from the response
+    let cleanedText = generatedText.trim();
+    
+    // Remove markdown code blocks if present
+    if (cleanedText.startsWith("```json")) {
+      cleanedText = cleanedText.slice(7); // Remove ```json
+    } else if (cleanedText.startsWith("```")) {
+      cleanedText = cleanedText.slice(3); // Remove ```
     }
-
-    if(cleanedTest.endsWith('```')){
-        cleanedTest = cleanedTest.slice(0, -3);
+    
+    // Remove trailing code block markers
+    if (cleanedText.endsWith("```")) {
+      cleanedText = cleanedText.slice(0, -3);
     }
-
-    cleanedTest = cleanedTest.trim();
-
-    const jsonMatch = cleanedTest.match(/\{[\s\S]*\}/);
+    
+    cleanedText = cleanedText.trim();
+    
+    // Try to find JSON object if text contains other content
+    const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-        throw new Error("No JSON object found in the response.");
+      throw new Error("No valid JSON found in response");
     }
-
+    
     const jsonString = jsonMatch[0];
     const projectData = JSON.parse(jsonString);
-    const data = {
-        success: true,
-        projectName: projectData.projectName,
-        fileStructure: projectData.fileStructure,
-        files: projectData.files,
-        setupInstructions: projectData.setupInstructions,
-        additionalNotes: projectData.additionalNotes,
-        summary: {
-            totalFiles: projectData.files.length,
-            language: params.language,
-            framework: params.framework,
-            hasTests: params.includeTests
-        }
+    const data =  {
+      success: true,
+      projectName: projectData.projectName,
+      fileStructure: projectData.fileStructure,
+      files: projectData.files,
+      setupInstructions: projectData.setupInstructions,
+      additionalNotes: projectData.additionalNotes,
+      summary: {
+        totalFiles: projectData.files.length,
+        language: params.language,
+        framework: params.framework,
+        hasTests: params.includeTests
+      }
     };
-
-    await generateProject(data, params.rootpath);
-
-    return data ;
-} catch(error){
+    await generateProject(data , params.rootpath)
+    
+    // Return data that can be used by writeFilesToDisk function
+    return data
+    
+  } catch (error) {
     console.error("Code generation error:", error);
     throw error;
+  }
 }
 
-} 
 
 
+
+/**
+ * Creates directories recursively based on fileStructure tree
+ */
 async function createStructure(basePath, node) {
   if (node.type === "directory") {
     const dirPath = path.join(basePath, node.name);
@@ -154,6 +165,9 @@ async function createStructure(basePath, node) {
   }
 }
 
+/**
+ * Writes actual file contents
+ */
 async function writeFiles(projectPath, files) {
   for (const file of files) {
     const fullPath = path.join(projectPath, file.path);
@@ -161,6 +175,9 @@ async function writeFiles(projectPath, files) {
   }
 }
 
+/**
+ * MAIN FUNCTION — JSON is passed directly
+ */
 async function generateProject(data , root) {
     
 const CODEGEN_ROOT = root;
@@ -176,5 +193,5 @@ const CODEGEN_ROOT = root;
   // Write content into files
   await writeFiles(projectPath, data.files);
 
-  console.log("✅ Project generated successfully!");
+  console.log(" Project generated successfully!");
 }

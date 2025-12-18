@@ -3,12 +3,12 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import dotenv from "dotenv";
-import { autoCommitAndPush } from "./tools/github.js";
-import { generateCode } from "./tools/generate-code.js";
-import { checkBestPractices, } from "./tools/best-practices.js";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-
+import {generateCode} from "./tools/generate-code.js"
+import {detectBugs} from "./tools/detect-bugs.js"
+import {checkBestPractices} from "./tools/check-best-practices.js"
+import {autoCommitAndPush} from "./tools/github-commit.js"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -22,7 +22,7 @@ console.log = (...args) => originalError("[LOG]", ...args);
 console.warn = (...args) => originalError("[WARN]", ...args);
 console.error = (...args) => originalError("[ERROR]", ...args);
 
-dotenv.config({ path: join(__dirname, "../.env") });
+dotenv.config({ path: join(__dirname, "./.env") });
 
 // Create server instance
 const server = new McpServer({
@@ -34,6 +34,8 @@ const server = new McpServer({
     prompts: {},
   },
 });
+
+//tools
 
 // MCP Tool 1: Code Generation
 server.tool(
@@ -145,8 +147,8 @@ server.tool(
   "Create and push a commit to GitHub repository",
   { 
     localPath: z.string(),
-    repo: z.string(),
-    branch: z.string(),
+    repoName: z.string(),
+    branchName: z.string(),
     message: z.string(),
   },
   {
@@ -179,3 +181,5 @@ async function main() {
   await server.connect(transport);
 }
 main()
+
+
